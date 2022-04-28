@@ -1,40 +1,49 @@
 package ru.netology.manager;
 
-import org.apache.commons.lang3.ArrayUtils;
-import ru.netology.domain.MovieItem;
-import ru.netology.repository.MovieRepository;
+import ru.netology.domain.Movie;
 
 public class MovieManager {
-    static final int DEFAULT_FEED_SIZE = 10;
-    private final MovieRepository repository;
+    private Movie[] movies = new Movie[0];
+    private int countOutMovies = 10;
 
-    public MovieManager(MovieRepository repository) {
-        this.repository = repository;
+    public MovieManager() {
     }
 
-    public void add(MovieItem item) {
-        repository.save(item);
+    public MovieManager(int countOutMovies) {
+        this.countOutMovies = countOutMovies;
     }
 
-    public MovieItem[] get(int number) {
-        var items = get();
+    public Movie[] getMoviesForFeed() {
+        // TODO: add logic
+        return null;
+    }
 
-        if (number > 0) {
-            items = ArrayUtils.subarray(items, 0, number);
+    public void add(Movie movie) {
+        // создаём новый массив размером на единицу больше, чем Movie[]
+        int length = movies.length + 1;
+        Movie[] tmp = new Movie[length];
+        // копируем поэлементно все элементы из Movie[]
+        for (int i = 0; i < movies.length; i++) {
+            tmp[i] = movies[i];
         }
-        return items;
+        //добавляем последний элемент в Movie[]
+        int LastIndex = tmp.length - 1;
+        tmp[LastIndex] = movie;
+        movies = tmp;
     }
 
-    public MovieItem[] get() {
-        var items = ArrayUtils.clone(repository.findAll());
-
-        ArrayUtils.reverse(items);
-        items = ArrayUtils.subarray(items, 0, DEFAULT_FEED_SIZE);
-
-        return items;
-    }
-
-    public void removeById(int id) {
-        repository.removeById(id);
+    public Movie[] getAll() {
+        Movie[] result;
+        if (movies.length>countOutMovies) {
+            result = new Movie[countOutMovies];
+        }
+        else {
+            result = new Movie[movies.length];
+        }
+        for (int i = 0; i < result.length; i++) {
+            int index = movies.length - i - 1;
+            result[i] = movies[index];
+        }
+        return result;
     }
 }
